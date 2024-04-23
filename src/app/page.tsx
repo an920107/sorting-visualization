@@ -60,7 +60,8 @@ export default function Home() {
       <div className="grid grid-cols-3 gap-x-8">
         {
           sortingMethods.map((value, index) => (
-            <Box key={value.name} name={value.name} numbers={value.numbers} />
+            <Box key={value.name} name={value.name} numbers={value.numbers}
+              isLoading={isStarted && !value.isCompleted()} isDone={value.isCompleted()} />
           ))
         }
       </div>
