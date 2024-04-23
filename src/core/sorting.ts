@@ -5,6 +5,10 @@ export interface SortingMethod {
     next: () => void,
 }
 
+function swap(arr: Array<number>, indexA: number, indexB: number) {
+    [arr[indexA], arr[indexB]] = [arr[indexB], arr[indexA]];
+}
+
 export class BubbleSort implements SortingMethod {
     name = "Bubble Sort";
     numbers: number[];
@@ -20,9 +24,9 @@ export class BubbleSort implements SortingMethod {
         if (this.isCompleted()) return;
 
         if (this.numbers[this.currentIndex] > this.numbers[this.currentIndex + 1]) {
-            [this.numbers[this.currentIndex], this.numbers[this.currentIndex + 1]]
-                = [this.numbers[this.currentIndex + 1], this.numbers[this.currentIndex]];
+            swap(this.numbers, this.currentIndex, this.currentIndex + 1);
         }
+
         this.currentIndex++;
         if (this.currentIndex === this.lastIndex) {
             this.currentIndex = 0;
@@ -40,12 +44,28 @@ export class InsertionSort implements SortingMethod {
     name = "Insertion Sort";
     numbers: number[];
 
+    sortedLength = 1;
+    currentIndex = 1;
+
     isCompleted() {
-        return true;
+        return this.sortedLength === this.numbers.length;
     }
 
     next() {
+        if (this.isCompleted()) return;
 
+        if (this.numbers[this.currentIndex] < this.numbers[this.currentIndex - 1]) {
+            swap(this.numbers, this.currentIndex, this.currentIndex - 1);
+            this.currentIndex--;
+        } else {
+            this.sortedLength++;
+            this.currentIndex = this.sortedLength;
+        }
+
+        if (this.currentIndex === 0) {
+            this.sortedLength++;
+            this.currentIndex = this.sortedLength;
+        }
     }
 
     constructor(numbers: Array<number>) {

@@ -8,6 +8,7 @@ function generateArray(size: number): Array<number> {
   const arr = Array(size);
   for (var i = 0; i < size; i++) {
     arr[i] = Math.floor(Math.random() * size);
+    // arr[i] = size - i - 1;
   }
   return arr;
 }
