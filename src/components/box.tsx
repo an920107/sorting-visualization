@@ -1,4 +1,6 @@
-import React from 'react'
+"use client";
+
+import React, { useEffect } from 'react'
 
 type Props = {
   name: string
@@ -6,15 +8,13 @@ type Props = {
 }
 
 export default function Box(props: Props) {
-  const numbers = props.numbers;
-
   return (
     <div className="my-6">
       <h2 className="mb-2">{props.name}</h2>
       <div className="box">
         {
-          numbers.map((number, index) => (
-            <div key={index} className="strip" style={{ height: `${(number + 1) * 5}px` }}></div>
+          props.numbers.map((number, index) => (
+            <div key={index} className="strip" style={{ height: `${(number + 1) * 0.35}rem` }}></div>
           ))
         }
       </div>

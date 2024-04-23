@@ -2,45 +2,72 @@
 
 import Box from "@/components/box";
 import { BubbleSort, HeapSort, InsertionSort, MergeSort, QuickSort, SortingMethod } from "@/core/sorting";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function generateArray(size: number): Array<number> {
-  const arr = Array.from({ length: 50 }, (v, k) => k);
-  shuffleArray(arr);
-  return arr;
-}
-
-function shuffleArray(array: Array<number>) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+  const arr = Array(size);
+  for (var i = 0; i < size; i++) {
+    arr[i] = Math.floor(Math.random() * size);
   }
+  return arr;
 }
 
 export default function Home() {
   const initialNumbers = generateArray(50);
 
-  const [sortingMethods, setSortingMethods] = useState<Array<SortingMethod>>(
-    [
+  const [sortingMethods, setSortingMethods] = useState<Array<SortingMethod>>([]);
+  const [isStarted, setIsStarted] = useState<boolean>(false);
+  const [isCompleted, setIsCompleted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setSortingMethods([
       new BubbleSort(Array.from(initialNumbers)),
       new InsertionSort(Array.from(initialNumbers)),
       new MergeSort(Array.from(initialNumbers)),
       new QuickSort(Array.from(initialNumbers)),
       new HeapSort(Array.from(initialNumbers)),
-    ]
-  );
+    ]);
+  }, []);
+
+  useEffect(() => {
+    if (!isStarted || isCompleted) return;
+    const interval = setInterval(() => {
+      setSortingMethods(
+        sortingMethods => {
+          var isAllCompleted = true;
+          for (var i = 0; i < sortingMethods.length; i++) {
+            if (!sortingMethods[i].isCompleted()) {
+              isAllCompleted = false;
+              break;
+            }
+          }
+          if (isAllCompleted) {
+            clearInterval(interval);
+            setIsCompleted(true);
+          }
+          return sortingMethods.map((method) => {
+            method.next();
+            return method;
+          });
+        }
+      );
+    }, 10);
+  }, [isStarted]);
 
   return (
     <div className="container mb-20">
       <div className="grid grid-cols-3 gap-x-8">
         {
           sortingMethods.map((value, index) => (
-            <Box name={value.name} numbers={value.numbers} />
+            <Box key={value.name} name={value.name} numbers={value.numbers} />
           ))
         }
       </div>
       <div className="h-8"></div>
-      <button>Start Sorting</button>
+      <div className="text-center">
+        {isStarted ? (<></>) : (<button onClick={() => setIsStarted(true)}>Start Sorting</button>)}
+        {isCompleted ? (<h2>Done!</h2>) : (isStarted ? (<h2>Sorting...</h2>) : (<></>))}
+      </div>
     </div>
   );
 }
