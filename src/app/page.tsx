@@ -4,17 +4,22 @@ import Box from "@/components/box";
 import { BubbleSort, HeapSort, InsertionSort, MergeSort, QuickSort, SortingMethod } from "@/core/sorting";
 import { useEffect, useState } from "react";
 
+const arraySize = 100;
+const intervalTime = 10;
+
 function generateArray(size: number): Array<number> {
   const arr = Array(size);
+  for (var i = 0; i < size; i++)
+    arr[i] = size - i - 1;
   for (var i = 0; i < size; i++) {
-    arr[i] = Math.floor(Math.random() * size);
-    // arr[i] = size - i - 1;
+    const rnd = Math.floor(Math.random() * size);
+    [arr[i], arr[rnd]] = [arr[rnd], arr[i]];
   }
   return arr;
 }
 
 export default function Home() {
-  const initialNumbers = generateArray(50);
+  const initialNumbers = generateArray(arraySize);
 
   const [sortingMethods, setSortingMethods] = useState<Array<SortingMethod>>([]);
   const [isStarted, setIsStarted] = useState<boolean>(false);
@@ -52,7 +57,7 @@ export default function Home() {
           });
         }
       );
-    }, 10);
+    }, intervalTime);
   }, [isStarted]);
 
   return (
@@ -60,7 +65,7 @@ export default function Home() {
       <div className="grid grid-cols-3 gap-x-8">
         {
           sortingMethods.map((value, index) => (
-            <Box key={value.name} name={value.name} numbers={value.numbers}
+            <Box key={value.name} name={value.name} numbers={value.numbers} steps={value.steps}
               isLoading={isStarted && !value.isCompleted()} isDone={value.isCompleted()} />
           ))
         }

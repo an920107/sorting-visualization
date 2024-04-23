@@ -1,8 +1,7 @@
-import { start } from "repl";
-
 export interface SortingMethod {
     name: string,
     numbers: Array<number>,
+    steps: number,
     isCompleted: () => boolean,
     next: () => void,
 }
@@ -13,7 +12,8 @@ function swap(arr: Array<number>, indexA: number, indexB: number) {
 
 export class BubbleSort implements SortingMethod {
     name = "Bubble Sort";
-    numbers: number[];
+    numbers: Array<number>;
+    steps = 0;
 
     lastIndex: number;
     currentIndex = 0;
@@ -34,6 +34,8 @@ export class BubbleSort implements SortingMethod {
             this.currentIndex = 0;
             this.lastIndex--;
         }
+
+        this.steps++;
     }
 
     constructor(numbers: Array<number>) {
@@ -44,7 +46,8 @@ export class BubbleSort implements SortingMethod {
 
 export class InsertionSort implements SortingMethod {
     name = "Insertion Sort";
-    numbers: number[];
+    numbers: Array<number>;
+    steps = 0;
 
     sortedLength = 1;
     currentIndex = 1;
@@ -68,6 +71,8 @@ export class InsertionSort implements SortingMethod {
             this.sortedLength++;
             this.currentIndex = this.sortedLength;
         }
+
+        this.steps++;
     }
 
     constructor(numbers: Array<number>) {
@@ -77,24 +82,109 @@ export class InsertionSort implements SortingMethod {
 
 export class MergeSort implements SortingMethod {
     name = "Merge Sort";
-    numbers: number[];
+    numbers: Array<number>;
+    steps = 0;
+
+    buffer: Array<number>;
+    width = 1;
+    begin = 0;
+    middle = 0;
+    end = 0;
+    leftBegin = 0;
+    leftEnd = 0;
+    rightBegin = 0;
+    rightEnd = 0;
+    currentIndex = 0;
+
+    state = 0;
 
     isCompleted() {
-        return true;
+        return this.width >= this.numbers.length && this.state === 0;
     }
 
     next() {
+        if (this.isCompleted()) return;
 
+        switch (this.state) {
+            case 0:
+                this.begin = 0;
+                this.state = 1;
+            case 1:
+                if (this.begin <= this.numbers.length - this.width - 1) {
+                    this.end = this.begin + this.width * 2 - 1;
+                    this.end = Math.min(this.end, this.numbers.length - 1);
+                    this.middle = this.begin + this.width;
+                    this.leftBegin = this.begin;
+                    this.leftEnd = this.middle - 1;
+                    this.rightBegin = this.middle;
+                    this.rightEnd = this.end;
+                    this.currentIndex = this.begin;
+                    this.state = 2;
+                } else {
+                    this.width *= 2;
+                    this.state = 0;
+                }
+                break;
+            case 2:
+                if (this.leftBegin <= this.leftEnd && this.rightBegin <= this.rightEnd) {
+                    if (this.numbers[this.leftBegin] < this.numbers[this.rightBegin]) {
+                        this.buffer[this.currentIndex] = this.numbers[this.leftBegin];
+                        this.leftBegin++;
+                    } else {
+                        this.buffer[this.currentIndex] = this.numbers[this.rightBegin];
+                        this.rightBegin++;
+                    }
+                    this.currentIndex++;
+                } else {
+                    this.state = 3;
+                }
+                break;
+            case 3:
+                if (this.leftBegin <= this.leftEnd) {
+                    this.buffer[this.currentIndex] = this.numbers[this.leftBegin];
+                    this.currentIndex++;
+                    this.leftBegin++;
+                } else {
+                    this.state = 4;
+                }
+                break;
+            case 4:
+                if (this.rightBegin <= this.rightEnd) {
+                    this.buffer[this.currentIndex] = this.numbers[this.rightBegin];
+                    this.currentIndex++;
+                    this.rightBegin++;
+                } else {
+                    this.currentIndex = this.begin;
+                    this.state = 5;
+                }
+                break;
+            case 5:
+                if (this.currentIndex <= this.end) {
+                    this.numbers[this.currentIndex] = this.buffer[this.currentIndex];
+                    this.currentIndex++;
+                } else {
+                    console.log(this.buffer);
+                    this.begin += this.width * 2;
+                    this.state = 1;
+                }
+                break;
+            default:
+                break;
+        }
+
+        this.steps++;
     }
 
     constructor(numbers: Array<number>) {
         this.numbers = numbers;
+        this.buffer = Array(numbers.length);
     }
 }
 
 export class QuickSort implements SortingMethod {
     name = "Quick Sort";
-    numbers: number[];
+    numbers: Array<number>;
+    steps = 0;
 
     stack: Array<number> = [];
     begin = 0;
@@ -127,17 +217,17 @@ export class QuickSort implements SortingMethod {
             case 1:
                 if (this.right > this.begin && this.numbers[this.right] >= this.pivot) {
                     this.right--;
-                    break;
                 } else {
                     this.state = 2;
                 }
+                break;
             case 2:
                 if (this.left <= this.right && this.numbers[this.left] <= this.pivot) {
                     this.left++;
-                    break;
                 } else {
                     this.state = 3;
                 }
+                break;
             case 3:
                 if (this.left < this.right) {
                     swap(this.numbers, this.left, this.right);
@@ -145,12 +235,10 @@ export class QuickSort implements SortingMethod {
                 } else {
                     if (this.begin < this.right) {
                         swap(this.numbers, this.begin, this.right);
-                        this.stack.push(this.begin);
-                        this.stack.push(this.right - 1);
+                        this.stack.push(this.begin, this.right - 1);
                     }
                     if (this.right < this.end) {
-                        this.stack.push(this.right + 1);
-                        this.stack.push(this.end);
+                        this.stack.push(this.right + 1, this.end);
                     }
                     this.state = 0;
                 }
@@ -158,25 +246,26 @@ export class QuickSort implements SortingMethod {
             default:
                 break;
         }
+
+        this.steps++;
     }
 
     constructor(numbers: Array<number>) {
         this.numbers = numbers;
-        this.stack.push(0);
-        this.stack.push(numbers.length - 1);
+        this.stack.push(0, numbers.length - 1);
     }
 }
 
 export class HeapSort implements SortingMethod {
     name = "Heap Sort";
-    numbers: number[];
+    numbers: Array<number>;
+    steps = 0;
 
     isCompleted() {
         return true;
     }
 
     next() {
-
     }
 
     constructor(numbers: Array<number>) {
