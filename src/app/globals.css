@@ -2,32 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+
+* {
+  font-family: 'Roboto Mono', monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+h1 {
+  @apply text-5xl text-gray-800 font-bold;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+h2 {
+  @apply text-2xl text-gray-700 font-bold;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+button {
+  @apply bg-gray-700 text-white px-3 py-1 rounded-md font-semibold;
+}
+
+button:hover {
+  @apply bg-gray-900;
+}
+
+.container {
+  @apply mx-auto px-4 max-w-7xl;
+}
+
+.box {
+  @apply grid grid-flow-col border-4 gap-x-0.5 px-0.5 pt-0.5 border-gray-500 items-end rounded-md;
+}
+
+.strip {
+  @apply bg-gray-400 w-auto rounded-t-sm;
 }
