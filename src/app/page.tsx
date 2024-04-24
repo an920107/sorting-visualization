@@ -2,8 +2,8 @@
 
 import Box from "@/components/box";
 import { BubbleSort, HeapSort, InsertionSort, MergeSort, QuickSort, SortingMethod } from "@/core/sorting";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 
 const defaultArraySize = 50;
 const defaultIntervalTime = 20;
