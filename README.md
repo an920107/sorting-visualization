@@ -1,5 +1,7 @@
 # Sorting Visualization
 
+> There is a preview on [sorting.squidspirit.com](https://sorting.squidspirit.com), which is set up with GitHub Pages.
+
 ## Description
 
 A visualization of several sorting methods. The followings are the sorting methods supported currently.
@@ -16,8 +18,6 @@ A visualization of several sorting methods. The followings are the sorting metho
 
 ## Usage
 
-> There is a preview on [sorting.squidspirit.com](https://sorting.squidspirit.com), which is set up with GitHub Pages.
-
 ### First Look
 
 ![Screenshot Init](./images/screenshot_init.png)
@@ -33,6 +33,14 @@ A visualization of several sorting methods. The followings are the sorting metho
 - A step means a comperation or swapping operation.
 
 - Every step costs 10 ms by default.
+
+### Query Parameters
+
+- `quantity`: The quantity of the strips. Default value is 50.
+
+- `interval`: The interval time between steps in millisecond. Default value is 10.
+
+For example, if you want to set the interval as 100, you can adjust the url as [sorting.squidspirit.com/?**interval=100**](https://sorting.squidspirit.com/?interval=100); if you want to set the interval as 5 and the quantity as 150, the url should be set as [sorting.squidspirit.com/?**interval=5**&**quantity=150**](https://sorting.squidspirit.com/?interval=5&quantity=150)
 
 ## Development
 
