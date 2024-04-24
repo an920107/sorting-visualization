@@ -163,7 +163,6 @@ export class MergeSort implements SortingMethod {
                     this.numbers[this.currentIndex] = this.buffer[this.currentIndex];
                     this.currentIndex++;
                 } else {
-                    console.log(this.buffer);
                     this.begin += this.width * 2;
                     this.state = 1;
                 }
@@ -261,14 +260,81 @@ export class HeapSort implements SortingMethod {
     numbers: Array<number>;
     steps = 0;
 
+    stack: Array<number> = [];
+    lastIndex: number;
+    currentIndex = 0;
+    left = 0;
+    right = 0;
+    end = 0;
+    root = 0;
+    largest = 0;
+
+    state = 0;
+    returnState = 0;
+
     isCompleted() {
-        return true;
+        return this.lastIndex === 0 && this.state === 0;
     }
 
     next() {
+        if (this.isCompleted()) return;
+
+        switch (this.state) {
+            case 0:
+                this.root = Math.floor((this.lastIndex - 1) / 2);
+            case 1:
+                this.stack.push(this.root);
+                this.returnState = 2;
+                this.state = -1;
+                break;
+            case 2:
+                this.root = this.stack.pop()!;
+                if (this.root >= 1) {
+                    this.root--;
+                    this.state = 1;
+                    break;
+                } else {
+                    this.state = 3;
+                }
+            case 3:
+                if (this.lastIndex > 0) {
+                    swap(this.numbers, this.lastIndex, 0);
+                    this.root = 0;
+                    this.lastIndex--;
+                    this.returnState = 3;
+                    this.state = -1;
+                } else {
+                    this.state = 0;
+                }
+                break;
+            case -1:
+                this.largest = this.root;
+                this.left = this.root * 2 + 1;
+                this.right = this.root * 2 + 2;
+                if (this.left <= this.lastIndex &&
+                    this.numbers[this.left] > this.numbers[this.largest]) {
+                    this.largest = this.left;
+                }
+                if (this.right <= this.lastIndex &&
+                    this.numbers[this.right] > this.numbers[this.largest]) {
+                    this.largest = this.right;
+                }
+                if (this.largest !== this.root) {
+                    swap(this.numbers, this.root, this.largest);
+                    this.root = this.largest;
+                } else {
+                    this.state = this.returnState;
+                }
+                break;
+            default:
+                break;
+        }
+
+        this.steps++;
     }
 
     constructor(numbers: Array<number>) {
         this.numbers = numbers;
+        this.lastIndex = numbers.length - 1;
     }
 }

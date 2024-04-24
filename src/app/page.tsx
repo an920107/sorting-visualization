@@ -4,7 +4,7 @@ import Box from "@/components/box";
 import { BubbleSort, HeapSort, InsertionSort, MergeSort, QuickSort, SortingMethod } from "@/core/sorting";
 import { useEffect, useState } from "react";
 
-const arraySize = 100;
+const arraySize = 50;
 const intervalTime = 10;
 
 function generateArray(size: number): Array<number> {
@@ -61,20 +61,26 @@ export default function Home() {
   }, [isStarted]);
 
   return (
-    <div className="container mb-20">
-      <div className="grid grid-cols-3 gap-x-8">
-        {
-          sortingMethods.map((value, index) => (
-            <Box key={value.name} name={value.name} numbers={value.numbers} steps={value.steps}
-              isLoading={isStarted && !value.isCompleted()} isDone={value.isCompleted()} />
-          ))
-        }
+    <>
+      <header className="container py-4">
+        <div className="flex flex-row justify-between items-center">
+          <h1>Sorting Visualization</h1>
+          <div className="text-center">
+            {isStarted ? (<></>) : (<button onClick={() => setIsStarted(true)}>Start Sorting</button>)}
+            {isCompleted ? (<h2>Done!</h2>) : (isStarted ? (<h2>Sorting...</h2>) : (<></>))}
+          </div>
+        </div>
+      </header>
+      <div className="container mb-20">
+        <div className="grid grid-cols-3 gap-x-8">
+          {
+            sortingMethods.map((value, index) => (
+              <Box key={value.name} name={value.name} numbers={value.numbers} steps={value.steps}
+                isLoading={isStarted && !value.isCompleted()} isDone={value.isCompleted()} />
+            ))
+          }
+        </div>
       </div>
-      <div className="h-8"></div>
-      <div className="text-center">
-        {isStarted ? (<></>) : (<button onClick={() => setIsStarted(true)}>Start Sorting</button>)}
-        {isCompleted ? (<h2>Done!</h2>) : (isStarted ? (<h2>Sorting...</h2>) : (<></>))}
-      </div>
-    </div>
+    </>
   );
 }
