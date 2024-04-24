@@ -123,8 +123,8 @@ export class MergeSort implements SortingMethod {
                 } else {
                     this.width *= 2;
                     this.state = 0;
+                    break;
                 }
-                break;
             case 2:
                 if (this.leftBegin <= this.leftEnd && this.rightBegin <= this.rightEnd) {
                     if (this.numbers[this.leftBegin] < this.numbers[this.rightBegin]) {

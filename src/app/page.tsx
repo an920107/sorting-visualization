@@ -2,10 +2,11 @@
 
 import Box from "@/components/box";
 import { BubbleSort, HeapSort, InsertionSort, MergeSort, QuickSort, SortingMethod } from "@/core/sorting";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const arraySize = 50;
-const intervalTime = 10;
+const defaultArraySize = 50;
+const defaultIntervalTime = 20;
 
 function generateArray(size: number): Array<number> {
   const arr = Array(size);
@@ -19,13 +20,16 @@ function generateArray(size: number): Array<number> {
 }
 
 export default function Home() {
-  const initialNumbers = generateArray(arraySize);
+  const params = useSearchParams();
 
   const [sortingMethods, setSortingMethods] = useState<Array<SortingMethod>>([]);
   const [isStarted, setIsStarted] = useState<boolean>(false);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
 
   useEffect(() => {
+    const initialNumbers = 
+      generateArray(Number.parseInt(params.get("quantity") ?? defaultArraySize.toString()));
+
     setSortingMethods([
       new BubbleSort(Array.from(initialNumbers)),
       new InsertionSort(Array.from(initialNumbers)),
@@ -57,7 +61,7 @@ export default function Home() {
           });
         }
       );
-    }, intervalTime);
+    }, Number.parseInt(params.get("interval") ?? defaultIntervalTime.toString()));
   }, [isStarted]);
 
   return (

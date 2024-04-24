@@ -29,7 +29,7 @@ button:hover {
 }
 
 .box {
-  @apply grid grid-flow-col border-4 gap-x-0.5 px-0.5 pt-0.5 border-gray-500 items-end rounded-md;
+  @apply grid grid-flow-col border-4 gap-px px-px pt-px border-gray-500 items-end rounded-md;
 }
 
 .strip {
