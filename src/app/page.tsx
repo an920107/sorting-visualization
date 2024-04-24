@@ -76,7 +76,7 @@ export default function Home() {
         </div>
       </header>
       <div className="container mb-20">
-        <div className="grid grid-cols-3 gap-x-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-8">
           {
             sortingMethods.map((value, index) => (
               <Box key={value.name} name={value.name} numbers={value.numbers} steps={value.steps}
